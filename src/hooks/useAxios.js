@@ -1,0 +1,56 @@
+import axios from "../api/axios";
+import { useEffect } from "react";
+import useRefreshToken from "./useRefreshToken";
+import useAuth from "./useAuth";
+
+export default function useAxios() {
+    const refresh = useRefreshToken();
+    const { auth } = useAuth();
+
+    useEffect(() => {
+
+        const requestIntercept = axios.interceptors.request.use(config => {
+            const publicRoutes = [
+                '/auth/login',
+                '/auth/register',
+                '/auth/forgot-password',
+                '/auth/refresh-token',
+            ];
+
+            const isPublic = publicRoutes.some(route =>
+                config.url?.endsWith(route)
+            );
+
+            if (isPublic) {
+                delete config.headers['Authorization'];
+                return config;
+            }
+
+            if (!config.headers['Authorization']) {
+                config.headers['Authorization'] = `Bearer ${auth?.accessToken}`;
+            }
+            return config;
+        }, (error) => Promise.reject(error));
+
+        const responseIntercept = axios.interceptors.response.use(
+            response => response,
+            async (error) => {
+                const prevRequest = error?.config;
+                if (error?.response?.status === 403 && !prevRequest?.sent) {
+                    prevRequest.sent = true;
+                    const newAccessToken = await refresh();
+                    prevRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
+                    return axios(prevRequest);
+                }
+                return Promise.reject(error);
+            }
+        );
+
+        return () => {
+            axios.interceptors.request.eject(requestIntercept);
+            axios.interceptors.response.eject(responseIntercept);
+        }
+    }, []);
+
+    return axios;
+}

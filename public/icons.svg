@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+    <!-- Dashboard -->
+    <symbol id="icon-dashboard" viewBox="0 0 24 24">
+        <svg width="64" height="65" viewBox="0 0 64 65" fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <rect x="3.33299" y="4.13158" width="57.173" height="57.173" rx="8.9722"
+                stroke="#F3F39E" stroke-width="6.55325" stroke-linecap="round"
+                stroke-linejoin="round" />
+            <rect x="12.9302" y="16.6514" width="37.6367" height="4.63798" rx="2.31899"
+                fill="#F3F39E" />
+            <rect x="12.9302" y="30.3008" width="37.6367" height="4.63798" rx="2.31899"
+                fill="#F3F39E" />
+            <rect x="12.9302" y="43.9502" width="37.6367" height="4.63798" rx="2.31899"
+                fill="#F3F39E" />
+        </svg>
+    </symbol>
+
+    <!-- Widgets -->
+    <symbol id="icon-widgets" viewBox="0 0 24 24">
+        <path
+            d="M16 6h-6v6h6V6zm2-2h-6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm-8 14h-6v6h6v-6zm2-2h-6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2z" />
+    </symbol>
+
+    <!-- Add more -->
+</svg>
