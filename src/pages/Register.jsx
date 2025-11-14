@@ -17,7 +17,6 @@ export default function Register() {
   const [agree, setAgree] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [loaded, setLoaded] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -49,12 +48,6 @@ export default function Register() {
   };
 
   useBodyClass("register-page");
-
-  useEffect(() => {
-    setLoaded(true);
-  }, []);
-
-  if (!loaded) return <>Loading...</>;
 
   return (
     <div className="register-box">

@@ -1,9 +1,13 @@
 // src/components/Sidebar.jsx
 import { useEffect } from "react";
+import Icon from "./Icon";
 
 export default function Sidebar() {
   return (
-    <aside className="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+    <aside
+      className="app-sidebar bg-body-secondary shadow"
+      data-bs-theme="dark"
+    >
       <div className="sidebar-brand">
         <a href="./index.html" className="brand-link">
           <img
@@ -26,7 +30,9 @@ export default function Sidebar() {
           >
             <li className="nav-item">
               <a href="./generate/theme.html" className="nav-link">
-                <i className="nav-icon bi bi-palette"></i>
+                <span className="sidebar-icon">
+                  <Icon name={"dashboard"}></Icon>
+                </span>
                 <p>Campaigns</p>
               </a>
             </li>

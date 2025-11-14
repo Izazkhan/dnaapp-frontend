@@ -1,5 +1,5 @@
 // components/GuestRoute.jsx
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 
 export default function GuestRoute({ children }) {
@@ -9,6 +9,5 @@ export default function GuestRoute({ children }) {
   if (auth?.isAuthenticated) {
     return <Navigate to={"/adcampaigns"} replace />;
   }
-  // If not → show page
-  return children;
+  return <Outlet />;
 }

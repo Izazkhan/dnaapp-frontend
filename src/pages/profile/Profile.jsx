@@ -2,13 +2,14 @@
 import React, { useState, useEffect, useContext } from "react";
 import PageHeader from "../../components/PageHeader";
 import useAxios from "../../hooks/useAxios";
-import "./profile.css";
+import "./profile.scss";
 import AuthContext from "../../context/AuthProvider";
+import useBodyClass from "../../hooks/useBodyClass";
 
 export default function Profile() {
   const { auth, setAuth } = useContext(AuthContext);
   const axios = useAxios();
-
+  useBodyClass("profile-p");
   const [formData, setFormData] = useState({
     name: "",
     email: "",

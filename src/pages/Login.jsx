@@ -9,7 +9,6 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [loaded, setLoaded] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,12 +22,6 @@ const Login = () => {
   };
 
   useBodyClass("login-page");
-
-  useEffect(() => {
-    setLoaded(true);
-  }, []);
-
-  if (!loaded) return <>Loading...</>;
 
   return (
     <div className="login-box">
@@ -83,7 +76,7 @@ const Login = () => {
               </div>
             </div>
           </form>
-          
+
           <p className="mt-1">
             <a href="/register" className="text-center">
               Register

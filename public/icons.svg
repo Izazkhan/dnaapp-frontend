@@ -21,5 +21,14 @@
             d="M16 6h-6v6h6V6zm2-2h-6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm-8 14h-6v6h6v-6zm2-2h-6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2z" />
     </symbol>
 
+
+    <symbol id="plus-orange" width="34" height="34" viewBox="0 0 34 34" fill="none"
+        xmlns="http://www.w3.org/2000/svg">
+        <circle cx="17.3996" cy="16.5929" r="16.4816" fill="#E1F05B" />
+        <path d="M17.3984 8.59375L17.3984 24.5937" stroke="#230344" stroke-width="3" />
+        <path d="M25.3984 16.5938L9.39848 16.5938" stroke="#230344" stroke-width="3" />
+    </symbol>
+
+
     <!-- Add more -->
 </svg>

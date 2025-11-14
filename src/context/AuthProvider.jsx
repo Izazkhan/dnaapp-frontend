@@ -65,6 +65,19 @@ export const AuthProvider = ({ children }) => {
     }
   }, [auth]);
 
+  if (!auth.isReady) {
+    return (
+      <div className="d-flex justify-content-center align-items-center vh-100">
+        <div
+          className="spinner-border text-primary"
+          style={{ width: "3rem", height: "3rem" }}
+        >
+          <span className="visually-hidden">Loading app...</span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <AuthContext.Provider value={{ auth, setAuth }}>
       {children}
