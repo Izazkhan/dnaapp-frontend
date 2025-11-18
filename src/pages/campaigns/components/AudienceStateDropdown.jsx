@@ -1,67 +1,29 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
+import useAxios from "../../../hooks/useAxios";
 
-// Fake API data: States with nested cities
-const FAKE_API_DATA = [
-  {
-    country_name: "United States",
-    country_id: 233,
-    state_name: "Arizona",
-    state_id: 1434,
-    cities: [
-      { city_name: "Chandler", city_id: 113731 },
-      { city_name: "Mesa", city_id: 121720 },
-      { city_name: "Phoenix", city_id: 124148 },
-      { city_name: "Scottsdale", city_id: 126063 },
-      { city_name: "Tucson", city_id: 127874 },
-    ],
-  },
-  {
-    country_name: "United States",
-    country_id: 233,
-    state_name: "California",
-    state_id: 1435,
-    cities: [
-      { city_name: "Los Angeles", city_id: 12345 },
-      { city_name: "San Francisco", city_id: 12346 },
-    ],
-  },
-  // Add more states...
-];
-
-const AudienceStateDropdown = ({ onSelectState, onSelectCity }) => {
-  const [selectedState, setSelectedState] = useState(""); // Selected state or empty for "Any"
+const AudienceStateDropdown = ({ onChange, onSelectCity }) => {
+  const [selectedLocation, setSelectedLocation] = useState(""); // Selected state or empty for "Any"
   const [searchQuery, setSearchQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  const [filteredData, setFilteredData] = useState(FAKE_API_DATA);
+  const [locData, setLocData] = useState([]);
+  const axios = useAxios();
+  const debounce = useRef(null);
 
-  // Filter states and cities on search (cross-search)
   React.useEffect(() => {
+    clearTimeout(debounce.current);
     if (!searchQuery.trim()) {
-      setFilteredData(FAKE_API_DATA);
+      // clear data;
       return;
     }
-
-    const queryLower = searchQuery.toLowerCase();
-    const filtered = FAKE_API_DATA.map((stateItem) => {
-      // Check state match
-      const stateMatches = stateItem.state_name
-        .toLowerCase()
-        .includes(queryLower);
-      // Check city matches
-      const matchingCities = stateItem.cities.filter((city) =>
-        city.city_name.toLowerCase().includes(queryLower)
-      );
-      // Include if state or any city matches
-      if (stateMatches || matchingCities.length > 0) {
-        return {
-          ...stateItem,
-          cities: matchingCities, // Only show matching cities
-        };
-      }
-      return null;
-    }).filter(Boolean); // Remove non-matches
-
-    setFilteredData(filtered);
+    debounce.current = setTimeout(async () => {
+      const result = await axios({
+        url: "/locations/cities/search",
+        params: {
+          q: searchQuery.trim(),
+        },
+      });
+      setLocData(result.data);
+    }, 400);
   }, [searchQuery]);
 
   // Toggle dropdown
@@ -71,20 +33,11 @@ const AudienceStateDropdown = ({ onSelectState, onSelectCity }) => {
   };
 
   // Select state
-  const selectState = (state) => {
-    setSelectedState(state.state_name);
+  const selectLocation = (location) => {
+    setSelectedLocation(location.display_name);
     setIsOpen(false);
     setSearchQuery("");
-    onSelectState?.(state); // Callback with full state object
-  };
-
-  // Select city (appends state name)
-  const selectCity = (city, stateName) => {
-    const displayText = `${city.city_name}, ${stateName}`; // "city_name, state_name"
-    onSelectCity?.({ ...city, displayText, state_name: stateName });
-    setSelectedState(displayText); // Update button to show "Phoenix, Arizona"
-    setIsOpen(false);
-    setSearchQuery("");
+    onChange(location);
   };
 
   // Close on outside click
@@ -105,14 +58,14 @@ const AudienceStateDropdown = ({ onSelectState, onSelectCity }) => {
         <select
           className="form-select border-0"
           disabled
-          value={selectedState || "Any"}
+          value={selectedLocation || "Any"}
         ></select>
         <button
           className="btn form-control b-select-btn text-ellipsis"
           aria-expanded={isOpen}
           onClick={toggleDropdown}
         >
-          {selectedState || "Any"}
+          {selectedLocation || "Any"}
         </button>
         {isOpen && (
           <div className="b-select-container">
@@ -130,44 +83,33 @@ const AudienceStateDropdown = ({ onSelectState, onSelectCity }) => {
             </div>
             <div className="b-select-options-container">
               <ul className="b-select-options" role="listbox">
-                {filteredData.length > 0 ? (
-                  filteredData.map((stateItem, index) => (
-                    <React.Fragment key={stateItem.state_id}>
-                      {/* State at top */}
+                {locData.length > 0 ? (
+                  locData.map((stateItem, index) => (
+                    <React.Fragment
+                      key={`${stateItem.state.id}${stateItem?.city?.id ?? ""}`}
+                    >
                       <li
-                        className={`b-select-option state-option ${
-                          selectedState === stateItem.state_name
+                        className={`b-select-option ${
+                          selectedLocation === stateItem.display_name
                             ? "selected"
                             : ""
                         }`}
-                        onClick={() => selectState(stateItem)}
+                        onClick={() => selectLocation(stateItem)}
                         role="option"
-                        aria-selected={selectedState === stateItem.state_name}
+                        aria-selected={
+                          selectedLocation === stateItem.display_name
+                        }
                       >
-                        {stateItem.state_name}
+                        {stateItem.display_name}
                       </li>
-                      {/* Matching cities below: "city_name, state_name" indented */}
-                      {stateItem.cities &&
-                        stateItem.cities.length > 0 &&
-                        stateItem.cities.map((city) => (
-                          <li
-                            key={city.city_id}
-                            className="b-select-option city-option" // Indented
-                            onClick={() =>
-                              selectCity(city, stateItem.state_name)
-                            }
-                            role="option"
-                            aria-selected={false}
-                          >
-                            {city.city_name}, {stateItem.state_name}
-                          </li>
-                        ))}
                     </React.Fragment>
                   ))
-                ) : (
+                ) : searchQuery.length ? (
                   <li className="b-select-option" role="option">
                     No states or cities found
                   </li>
+                ) : (
+                  ""
                 )}
               </ul>
             </div>

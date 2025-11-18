@@ -19,7 +19,7 @@ const useAuth = () => {
         } catch (err) {
             console.warn('Logout failed', err);
         } finally {
-            setAuth(null);
+            setAuth({isAuthenticated: false, isReady: true});
             localStorage.removeItem('accessToken');
         }
     };

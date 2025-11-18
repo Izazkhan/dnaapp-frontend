@@ -18,6 +18,7 @@ export default function Profile() {
   });
 
   const [errors, setErrors] = useState({
+    error: "",
     name: "",
     email: "",
     password: "",
@@ -45,7 +46,7 @@ export default function Profile() {
           confirm_password: "",
         });
       } catch (err) {
-        setErrors({ email: "Failed to load profile." });
+        setErrors({ error: "Failed to load profile." });
       } finally {
         setLoading(false);
       }
@@ -136,7 +137,7 @@ export default function Profile() {
       setErrors({});
     } catch (err) {
       const msg = err.response?.data?.message || "Update failed.";
-      setErrors({ email: msg });
+      setErrors({ error: msg });
     } finally {
       setUpdating(false);
     }
@@ -171,6 +172,7 @@ export default function Profile() {
           <h4 className="pb-4 border-bottom">Account settings</h4>
 
           {success && <div className="alert alert-success mb-3">{success}</div>}
+          {errors?.error && <div className="alert alert-danger mb-3">{errors.error}</div>}
 
           <form onSubmit={handleSubmit}>
             <div className="py-2">

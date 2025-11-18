@@ -2,10 +2,12 @@ import axios from "../api/axios";
 import { useEffect } from "react";
 import useRefreshToken from "./useRefreshToken";
 import useAuth from "./useAuth";
+import { useNavigate } from "react-router-dom";
 
 export default function useAxios() {
     const refresh = useRefreshToken();
-    const { auth } = useAuth();
+    const { auth, logout } = useAuth();
+    const navigate = useNavigate();
 
     useEffect(() => {
 
@@ -41,6 +43,10 @@ export default function useAxios() {
                     const newAccessToken = await refresh();
                     prevRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
                     return axios(prevRequest);
+                }
+                if (error?.response.status === 401) {
+                    logout();
+                    navigate('/login');
                 }
                 return Promise.reject(error);
             }

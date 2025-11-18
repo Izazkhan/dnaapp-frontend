@@ -65,7 +65,7 @@ export const AuthProvider = ({ children }) => {
     }
   }, [auth]);
 
-  if (!auth.isReady) {
+  if (!auth?.isReady) {
     return (
       <div className="d-flex justify-content-center align-items-center vh-100">
         <div

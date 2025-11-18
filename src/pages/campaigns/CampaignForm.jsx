@@ -96,6 +96,21 @@ const CampaignForm = ({ selectedPlatform, onBack, onSubmit }) => {
     }));
   };
 
+  // Location change
+  const handleLocationChange = (loc) => {
+    setForm((prev) => ({
+      ...prev,
+      locations: [
+        {
+          city_id: loc.city?.id ?? null,
+          state_id: loc.state?.id,
+          country_id: loc.state?.country_id,
+          radius_miles: 5, //default
+        },
+      ],
+    }));
+  };
+
   const getGenderLabel = () => {
     if (genderRatio === 0) return "More Male (75% Male / 25% Female)";
     if (genderRatio === 50) return "50-50";
@@ -266,7 +281,7 @@ const CampaignForm = ({ selectedPlatform, onBack, onSubmit }) => {
 
           {/* Country (simplified select for demo) */}
           <AudienceStateDropdown
-            onSelectState={(state) => console.log("Selected:", state)}
+            onChange={(loc) => handleLocationChange(loc)}
           />
 
           {/* Follower Min */}
@@ -462,12 +477,12 @@ const CampaignForm = ({ selectedPlatform, onBack, onSubmit }) => {
                   onChange={(e) =>
                     handleInputChange(
                       "ad_campaign_deliverable_id",
-                      e.target.value
+                      parseInt(e.target.value) || null
                     )
                   }
                   className="form-control outline-0"
                 >
-                  <option value="">Select Deliverable</option>
+                  <option value="" hidden disabled>Select Deliverable</option>
                   {data?.deliverables?.map((d_type) => (
                     <option key={d_type.id} value={d_type.id}>
                       {d_type.name}
@@ -519,6 +534,7 @@ const CampaignForm = ({ selectedPlatform, onBack, onSubmit }) => {
               className="d-none"
               id="description"
               name="description"
+              onChange={() => {}}
             />
             <small id="description_error" className="text-danger error">
               {errors.description}

@@ -67,12 +67,12 @@ const iconMap = {
       <path
         d="M17.3984 8.59375L17.3984 24.5937"
         stroke="#230344"
-        stroke-width="3"
+        strokeWidth="3"
       />
       <path
         d="M25.3984 16.5938L9.39848 16.5938"
         stroke="#230344"
-        stroke-width="3"
+        strokeWidth="3"
       />
     </svg>
   ),
