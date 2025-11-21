@@ -17,7 +17,7 @@ const AudienceStateDropdown = ({ onChange, onSelectCity }) => {
     }
     debounce.current = setTimeout(async () => {
       const result = await axios({
-        url: "/locations/cities/search",
+        url: "/locations/search",
         params: {
           q: searchQuery.trim(),
         },
@@ -55,12 +55,9 @@ const AudienceStateDropdown = ({ onChange, onSelectCity }) => {
     <div className="mb-3">
       <label>Audience State</label>
       <div className="b-select">
-        <select
-          className="form-select border-0"
-          disabled
-          value={selectedLocation || "Any"}
-        ></select>
+       
         <button
+        type="button"
           className="btn form-control b-select-btn text-ellipsis"
           aria-expanded={isOpen}
           onClick={toggleDropdown}

@@ -3,12 +3,12 @@ import "../../App.scss";
 import { Link, useNavigate } from "react-router-dom";
 import CampaignForm from "./CampaignForm"; // Adjust path as needed for your CampaignForm.jsx
 import AdCampaignContext from "../../context/AdCampaignProvider";
+import useAxios from "../../hooks/useAxios";
 
 const CreateCampaign = () => {
   const [step, setStep] = useState(1);
-
-  const { data, loading } = useContext(AdCampaignContext);
-  const [selectedType, setSelectedType] = useState(""); // Reset on init; set during step 1
+  const axios = useAxios();
+  const [platform, setPlatform] = useState(""); // Reset on init; set during step 1
   const navigate = useNavigate();
 
   // Campaign data for step 1
@@ -35,21 +35,45 @@ const CreateCampaign = () => {
 
   // Click handler for platform selection
   const handleSelect = (typeId) => {
-    setSelectedType(typeId);
+    setPlatform(typeId);
+  };
+
+  const handleFormSubmit = async (formData) => {
+    try {
+      const response = await axios.post("/adcampaigns", formData);
+
+      // Handle success (e.g., show notification, redirect)
+      console.log("Campaign created successfully:", response.data);
+      // Optional: Reset form or navigate
+    //   setForm({}); // If using state
+      navigate("/adcampaigns"); // If using React Router
+
+      return { success: true, data: response.data };
+    } catch (error) {
+      // Handle error (e.g., show toast with error message)
+      console.error("Error creating campaign:", error);
+      const errorMessage =
+        error.response?.data?.message || "Failed to create campaign";
+
+      // Optional: Set error state
+      //   setErrors({ submit: errorMessage });
+
+      return { success: false, error: errorMessage };
+    }
   };
 
   // Next handler: Advance steps
-  const handleNext = () => {
+  const handleNext = (formData) => {
     if (step === 1) {
-      if (selectedType) {
+      if (platform) {
         setStep(2);
       } else {
         console.log("Please select a platform first");
         // Optional: Show toast/error UI here
       }
     } else if (step === 2) {
-      console.log("Submit form data"); // Integrate with API/submit logic
-      // e.g., handleFormSubmit(formData);
+      console.log("Submit form data", formData); // Integrate with API/submit logic
+      handleFormSubmit(formData);
     }
   };
 
@@ -96,7 +120,7 @@ const CreateCampaign = () => {
                   <div
                     key={campaign.id}
                     className={`card campaign-card mb-3 ${
-                      selectedType === campaign.id ? "selected" : ""
+                      platform === campaign.id ? "selected" : ""
                     }`}
                   >
                     <div
@@ -116,24 +140,27 @@ const CreateCampaign = () => {
               ) : (
                 // Step 2: Campaign Form
                 <CampaignForm
-                  selectedPlatform={selectedType}
+                  selectedPlatform={platform}
                   onBack={handleBack}
-                  onSubmit={handleNext}
+                  platform={platform}
+                  onSubmit={(data) => handleNext(data)}
                 />
               )}
             </div>
           </div>
           {/* Next Button (conditional text/action) */}
-          <div className="text-center">
-            <button
-              className="btn btn-next btn-secondary-outline"
-              onClick={handleNext}
-              type="button"
-              disabled={step === 1 && !selectedType} // Disable if no selection in step 1
-            >
-              {step === 1 ? "NEXT" : "CREATE CAMPAIGN"}
-            </button>
-          </div>
+          {step === 1 && (
+            <div className="text-center">
+              <button
+                className="btn btn-next btn-secondary-outline"
+                onClick={handleNext}
+                type="button"
+                disabled={!platform} // Disable if no selection in step 1
+              >
+                NEXT
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>
